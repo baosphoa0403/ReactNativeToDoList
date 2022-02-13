@@ -28,7 +28,11 @@ const CreateTask = () => {
         style={styles.input}
         placeholder={'Write a task'}
         value={task}
-        onChangeText={text => setTask(text)}
+        onChangeText={text => {
+          console.log(text);
+
+          setTask(text);
+        }}
       />
       <TouchableOpacity onPress={() => handleAddTask()}>
         <View style={styles.addWrapper}>

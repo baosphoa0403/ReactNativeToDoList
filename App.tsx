@@ -1,30 +1,25 @@
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
 import {Provider} from 'react-redux';
-import CreateTask from './src/component/CreateTask/CreateTask';
-import ListTask from './src/component/ListTask/ListTask';
-import Nav from './src/component/Nav/nav';
 import {store} from './src/component/store/store';
+import Detail from './src/pages/detail/Detail';
+import Home from './src/pages/home/home';
+import ListTaskToDo from './src/pages/listTask/ListTask';
 
+const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <Provider store={store}>
-      <View style={styles.container}>
-        <Nav />
-        <ScrollView>
-          <ListTask />
-        </ScrollView>
-        <CreateTask />
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login Page">
+          <Stack.Screen name="Login Page" component={Home} />
+          <Stack.Screen name="Detail" component={Detail} />
+          <Stack.Screen name="ListTask" component={ListTaskToDo} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </Provider>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-});
 
 export default App;
