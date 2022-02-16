@@ -1,9 +1,11 @@
 import {Action, configureStore, ThunkAction} from '@reduxjs/toolkit';
 import {taskSlice} from '../../app/TaskProvider/Task.slice';
+import {userSlice} from '../../app/UserProvider/User.slice';
 
 export const store = configureStore({
   reducer: {
     taskSlice: taskSlice.reducer,
+    userSlice: userSlice.reducer,
   },
 });
 

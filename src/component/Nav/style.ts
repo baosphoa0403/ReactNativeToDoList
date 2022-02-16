@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   tasksWrapper: {
-    paddingTop: 80,
+    paddingTop: 10,
     paddingHorizontal: 20,
   },
   text: {

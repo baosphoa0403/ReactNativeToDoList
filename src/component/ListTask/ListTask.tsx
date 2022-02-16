@@ -1,18 +1,17 @@
 import React from 'react';
 import {SafeAreaView} from 'react-native';
-import {selectListCount} from '../../app/TaskProvider/Task.selector';
-import {useAppSelector} from '../../hook/hook';
+import {Task} from '../../app/TaskProvider/Task.type';
 
-import Task from '../Task/Task';
-
-const ListTask = () => {
-  const listTask = useAppSelector(selectListCount);
-
+import TaskItem from '../Task/Task';
+interface IListTask {
+  listTask: Task[];
+}
+const ListTask = ({listTask}: IListTask) => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <SafeAreaView style={{paddingHorizontal: 10}}>
       {listTask.map((item, index) => {
-        return <Task item={item} key={index} />;
+        return <TaskItem item={item} key={index} />;
       })}
     </SafeAreaView>
   );

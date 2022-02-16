@@ -1,14 +1,14 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Button, StyleSheet, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {removeTask} from '../../app/TaskProvider/Task.slice';
-
-import {ITask} from '../../models/Task';
+import {Task} from '../../app/TaskProvider/Task.type';
 interface PropsTask {
-  item: ITask;
+  item: Task;
 }
 
-const Task = ({item}: PropsTask) => {
+const TaskItem = ({item}: PropsTask) => {
   const dispatch = useDispatch();
   const handleRemoveTask = (id: number) => {
     dispatch(removeTask(id));
@@ -17,13 +17,24 @@ const Task = ({item}: PropsTask) => {
     <View style={styles.item}>
       <View style={styles.itemLeft}>
         <View style={styles.square} />
-        <Text style={styles.itemText}>{item.content} </Text>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            alignItems: 'stretch',
+          }}>
+          <Text style={styles.itemText}>Title - {item.title}</Text>
+          <Text style={styles.itemText}>Content - {item.description} </Text>
+        </View>
         <Button
-          title="Remove Task"
+          title="Remove"
           onPress={() => {
             handleRemoveTask(item.id);
           }}
         />
+        <View style={styles.chip}>
+          <Text>{item.status.toUpperCase()} </Text>
+        </View>
       </View>
     </View>
   );
@@ -65,6 +76,12 @@ const styles = StyleSheet.create({
   },
   itemText: {
     maxWidth: '80%',
+    marginRight: '2%',
+  },
+  chip: {
+    backgroundColor: 'grey',
+    padding: 20,
+    borderRadius: 50,
   },
 });
-export default Task;
+export default TaskItem;
