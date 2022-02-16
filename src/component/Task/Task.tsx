@@ -1,9 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {removeTask} from '../../app/TaskProvider/Task.slice';
 import {Task} from '../../app/TaskProvider/Task.type';
+import Icon from 'react-native-vector-icons/FontAwesome';
 interface PropsTask {
   item: Task;
 }
@@ -26,15 +27,17 @@ const TaskItem = ({item}: PropsTask) => {
           <Text style={styles.itemText}>Title - {item.title}</Text>
           <Text style={styles.itemText}>Content - {item.description} </Text>
         </View>
-        <Button
-          title="Remove"
+        <View style={styles.chip}>
+          <Text>{item.status.toUpperCase()} </Text>
+        </View>
+        <Icon
+          style={{margin: 20}}
+          name="remove"
+          size={30}
           onPress={() => {
             handleRemoveTask(item.id);
           }}
         />
-        <View style={styles.chip}>
-          <Text>{item.status.toUpperCase()} </Text>
-        </View>
       </View>
     </View>
   );
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     marginRight: '2%',
   },
   chip: {
-    backgroundColor: 'grey',
+    backgroundColor: '#df2284',
     padding: 20,
     borderRadius: 50,
   },

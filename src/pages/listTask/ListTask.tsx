@@ -26,6 +26,7 @@ const ListTaskToDo = () => {
   return (
     <View style={styles.container}>
       <Nav />
+      {/* <Icon name="book" size={50} /> */}
       <ScrollView>
         <ListTask listTask={listTask} />
       </ScrollView>
