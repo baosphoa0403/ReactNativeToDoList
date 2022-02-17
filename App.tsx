@@ -5,7 +5,7 @@ import React, {Fragment, useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
 import {store} from './src/component/store/store';
 import LoginPage from './src/pages/Login/Login';
-import {Home} from './src/pages/home/home';
+import {Home} from './src/pages/Home/home';
 
 const Stack = createNativeStackNavigator();
 

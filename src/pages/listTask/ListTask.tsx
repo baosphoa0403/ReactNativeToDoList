@@ -1,36 +1,38 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {useDispatch} from 'react-redux';
-import {fetchListTaskActionAsync} from '../../app/TaskProvider/Task.action';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectListTasks} from '../../app/TaskProvider/Task.selector';
 import {fetchListTask} from '../../app/TaskProvider/Task.service';
+import {setListTask} from '../../app/TaskProvider/Task.slice';
 import {Task} from '../../app/TaskProvider/Task.type';
-import CreateTask from '../../component/CreateTask/CreateTask';
 import ListTask from '../../component/ListTask/ListTask';
 import Nav from '../../component/Nav/nav';
 import {restAPI} from '../../config/api';
+import ModalCreate from '../Modal/Modal';
 
 const ListTaskToDo = () => {
-  const [listTask, setlistTask] = useState<Task[]>([]);
+  const dispatch = useDispatch();
+
+  const listTask = useSelector(selectListTasks);
   useEffect(() => {
     fetchListTask(restAPI)
       .then(res => {
-        console.log(res);
-        setlistTask(res as Task[]);
+        dispatch(setListTask(res));
       })
       .catch(error => {
         console.log(error);
       });
-  }, []);
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>
       <Nav />
-      {/* <Icon name="book" size={50} /> */}
       <ScrollView>
         <ListTask listTask={listTask} />
       </ScrollView>
-      {/* <CreateTask /> */}
+      <ModalCreate />
     </View>
   );
 };

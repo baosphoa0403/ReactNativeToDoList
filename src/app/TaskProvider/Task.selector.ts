@@ -1,5 +1,8 @@
 import {RootState} from '../../component/store/store';
-import {ITask} from '../../models/Task';
+import {Task} from './Task.type';
 
-export const selectListCount = (state: RootState): ITask[] =>
+export const selectListTasks = (state: RootState): Task[] =>
   state.taskSlice.listTask;
+
+export const selectOpenModal = (state: RootState): boolean =>
+  state.taskSlice.openModal;

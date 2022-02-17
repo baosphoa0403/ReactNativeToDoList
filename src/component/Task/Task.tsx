@@ -24,8 +24,8 @@ const TaskItem = ({item}: PropsTask) => {
             flexDirection: 'column',
             alignItems: 'stretch',
           }}>
-          <Text style={styles.itemText}>Title - {item.title}</Text>
-          <Text style={styles.itemText}>Content - {item.description} </Text>
+          <Text style={styles.itemTextTitle}>{item.title}</Text>
+          <Text style={styles.itemText}>{item.description} </Text>
         </View>
         <View style={styles.chip}>
           <Text>{item.status.toUpperCase()} </Text>
@@ -80,6 +80,11 @@ const styles = StyleSheet.create({
   itemText: {
     maxWidth: '80%',
     marginRight: '2%',
+  },
+  itemTextTitle: {
+    maxWidth: '80%',
+    marginRight: '2%',
+    fontWeight: 'bold',
   },
   chip: {
     backgroundColor: '#df2284',
