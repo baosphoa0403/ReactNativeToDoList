@@ -1,18 +1,54 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {removeTask} from '../../app/TaskProvider/Task.slice';
+import {
+  removeTask,
+  updateStatusTaskDoneToDo,
+} from '../../app/TaskProvider/Task.slice';
 import {Task} from '../../app/TaskProvider/Task.type';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {fetchRemoveTask} from '../../app/TaskProvider/Task.service';
+import {restAPI} from '../../config/api';
+import {showToast} from '../../utils/utils';
+import IconMaterial from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface PropsTask {
   item: Task;
 }
 
 const TaskItem = ({item}: PropsTask) => {
   const dispatch = useDispatch();
-  const handleRemoveTask = (id: number) => {
-    dispatch(removeTask(id));
+  const handleRemoveTask = (data: Task) => {
+    dispatch(removeTask(data.id));
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    fetchRemoveTask(data.id, restAPI).then(res => {
+      showToast(
+        'Remove Task Successfully',
+        `${data.title} - ${data.description}`,
+      );
+    });
+  };
+  const updateTaskDone = async (data: Task) => {
+    dispatch(updateStatusTaskDoneToDo(data));
+    console.log(data);
+    const token = await AsyncStorage.getItem('token');
+    axios({
+      method: 'PATCH',
+      url: `http://localhost:3000/task/${data.id}?status=done`,
+      headers: {Authorization: `Bearer ${token}`},
+    })
+      .then(res => {
+        console.log(res.data);
+        showToast(
+          'Update Task Done Successfully',
+          `${data.title} - ${data.description}`,
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
   return (
     <View style={styles.item}>
@@ -27,17 +63,32 @@ const TaskItem = ({item}: PropsTask) => {
           <Text style={styles.itemTextTitle}>{item.title}</Text>
           <Text style={styles.itemText}>{item.description} </Text>
         </View>
-        <View style={styles.chip}>
+        <View
+          style={item.status === 'todo' ? styles.chipToDo : styles.chipDone}>
           <Text>{item.status.toUpperCase()} </Text>
         </View>
-        <Icon
-          style={{margin: 20}}
-          name="remove"
-          size={30}
-          onPress={() => {
-            handleRemoveTask(item.id);
-          }}
-        />
+        {item.status === 'todo' ? (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                updateTaskDone(item);
+              }}>
+              <IconMaterial
+                style={{margin: 10, color: 'green'}}
+                name="done"
+                size={30}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleRemoveTask(item);
+              }}>
+              <Icon style={{margin: 20}} name="remove" size={30} />
+            </TouchableOpacity>
+          </>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );
@@ -86,8 +137,13 @@ const styles = StyleSheet.create({
     marginRight: '2%',
     fontWeight: 'bold',
   },
-  chip: {
+  chipToDo: {
     backgroundColor: '#df2284',
+    padding: 20,
+    borderRadius: 50,
+  },
+  chipDone: {
+    backgroundColor: 'green',
     padding: 20,
     borderRadius: 50,
   },

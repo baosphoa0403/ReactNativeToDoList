@@ -6,15 +6,17 @@ import React from 'react';
 const Tab = createBottomTabNavigator();
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconAnt from 'react-native-vector-icons/AntDesign';
+import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import {openCloseModal} from '../../app/TaskProvider/Task.slice';
 import {useDispatch} from 'react-redux';
+import ListTaskDone from '../Done/Done';
 export const Home = () => {
   const dispatch = useDispatch();
   return (
     <Tab.Navigator>
       <Tab.Screen
         options={{
-          tabBarLabel: 'List Task',
+          tabBarLabel: 'Tasks',
           tabBarIcon: ({color, size}) => (
             <Icon name="tasks" color={color} size={size} />
           ),
@@ -28,7 +30,7 @@ export const Home = () => {
             />
           ),
         }}
-        name="List Task"
+        name="Tasks"
         component={ListTaskToDo}
       />
       <Tab.Screen
@@ -40,6 +42,16 @@ export const Home = () => {
         }}
         name="Profile"
         component={Profile}
+      />
+      <Tab.Screen
+        options={{
+          tabBarLabel: 'Done',
+          tabBarIcon: ({color, size}) => (
+            <IconMaterial name="done" color={color} size={size} />
+          ),
+        }}
+        name="Done"
+        component={ListTaskDone}
       />
     </Tab.Navigator>
   );

@@ -1,11 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
-  Alert,
   Modal,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +14,8 @@ import {selectOpenModal} from '../../app/TaskProvider/Task.selector';
 import {fetchCreateTask} from '../../app/TaskProvider/Task.service';
 import {createTask, openCloseModal} from '../../app/TaskProvider/Task.slice';
 import {restAPI} from '../../config/api';
+import {showToast} from '../../utils/utils';
+
 export interface CreateTask {
   title: string;
   description: string;
@@ -21,10 +24,10 @@ const ModalCreate = () => {
   const modalVisible = useSelector(selectOpenModal);
   const [task, setTask] = useState<CreateTask>({description: '', title: ''});
   const dispatch = useDispatch();
+
   const submit = () => {
     fetchCreateTask(task, restAPI)
       .then(res => {
-        Alert.alert('Create Task Successfully');
         dispatch(
           createTask({
             id: res.id,
@@ -33,6 +36,8 @@ const ModalCreate = () => {
             status: res.status,
           }),
         );
+        setTask({description: '', title: ''});
+        showToast('Create Successfully', res.title + '-' + res.description);
       })
       .catch(err => {
         console.log(err);
@@ -44,46 +49,50 @@ const ModalCreate = () => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        Alert.alert('Modal has been closed.');
         dispatch(openCloseModal());
       }}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Create Task</Text>
-          <View style={{display: 'flex', flexDirection: 'row'}}>
-            <Text style={{marginTop: 40, marginRight: 40}}>Title</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Title"
-              value={task.title}
-              onChangeText={text => {
-                console.log(text);
-                setTask({...task, title: text});
-              }}
-            />
+      <TouchableWithoutFeedback
+        onPress={() => {
+          dispatch(openCloseModal());
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Create Task</Text>
+            <View style={{display: 'flex', flexDirection: 'row'}}>
+              <Text style={{marginTop: 40, marginRight: 40}}>Title</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Title"
+                value={task.title}
+                onChangeText={text => {
+                  console.log(text);
+                  setTask({...task, title: text});
+                }}
+              />
+            </View>
+            <View style={{display: 'flex', flexDirection: 'row'}}>
+              <Text style={{marginTop: 40}}>Description</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Description"
+                value={task.description}
+                onChangeText={text => {
+                  console.log(text);
+                  setTask({...task, description: text});
+                }}
+              />
+            </View>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                dispatch(openCloseModal());
+                submit();
+              }}>
+              <Text style={styles.textStyle}>Submit</Text>
+            </Pressable>
           </View>
-          <View style={{display: 'flex', flexDirection: 'row'}}>
-            <Text style={{marginTop: 40}}>Description</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Description"
-              value={task.description}
-              onChangeText={text => {
-                console.log(text);
-                setTask({...task, description: text});
-              }}
-            />
-          </View>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              dispatch(openCloseModal());
-              submit();
-            }}>
-            <Text style={styles.textStyle}>Submit</Text>
-          </Pressable>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -92,8 +101,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
     flexDirection: 'column',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
     width: 300,
