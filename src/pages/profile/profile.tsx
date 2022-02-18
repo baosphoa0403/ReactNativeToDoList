@@ -1,11 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
+import ImagePicker from 'react-native-image-crop-picker';
 import {useFocusEffect} from '@react-navigation/native';
 // import axios from 'axios';
 import React, {useCallback, useState} from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Button, Image, Platform, StyleSheet, Text, View} from 'react-native';
 import {getMe} from '../../app/UserProvider/User.service';
 import {User} from '../../app/UserProvider/User.type';
 import {restAPI} from '../../config/api';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const [profile, setProfile] = useState<User | null>(null);
@@ -21,6 +24,64 @@ const Profile = () => {
         });
     }, []),
   );
+  const choosePhotoFormLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      setProfile({
+        avatar: image.path as string,
+        id: profile?.id as number,
+        password: profile?.password as string,
+        name: profile?.name as string,
+        phone: profile?.phone as string,
+        username: profile?.username as string,
+      });
+
+      const formdata = new FormData();
+
+      formdata.append('image', {
+        uri:
+          Platform.OS === 'android'
+            ? image.sourceURL
+            : (image.sourceURL as string).replace('file://', ''),
+        type: image.mime,
+        name: image.filename,
+      });
+      fetch(
+        'https://api.imgbb.com/1/upload?key=f07c39c75e96768f44b57b977f280e90',
+        {
+          method: 'POST',
+          body: formdata,
+        },
+      )
+        .then(res => {
+          res.json().then(i => {
+            console.log(i.data.display_url);
+            AsyncStorage.getItem('token').then(token => {
+              axios({
+                url: 'http://localhost:3000/user/uploadAvatar',
+                data: {img: i.data.display_url},
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then(result => {
+                  console.log(result.data);
+                })
+                .catch(err => {
+                  console.log({...err});
+                });
+            });
+          });
+        })
+        .catch(err => {
+          console.log({...err});
+        });
+    });
+  };
   return (
     <View style={styles.container}>
       {/* <Text>Hello Profile {profile?.name}</Text> */}
@@ -33,15 +94,18 @@ const Profile = () => {
           flexWrap: 'wrap',
           alignItems: 'flex-start',
         }}>
+        <Button title="Upload Avatar" onPress={choosePhotoFormLibrary} />
         <View style={styles.item}>
-          <Text style={{marginBottom: 50}}>Username </Text>
-          <Text style={{marginBottom: 50}}>Name </Text>
-          <Text style={{marginBottom: 50}}>Phone </Text>
+          <Text style={{marginBottom: 30}}>Username </Text>
+          <Text style={{marginBottom: 30}}>Name </Text>
+          <Text style={{marginBottom: 30}}>Phone </Text>
+          <Text style={{marginBottom: 30}}>Password </Text>
         </View>
         <View style={styles.item}>
-          <Text style={{marginBottom: 50}}>{profile?.username} </Text>
-          <Text style={{marginBottom: 50}}>{profile?.name.toUpperCase()} </Text>
-          <Text style={{marginBottom: 50}}>{profile?.phone} </Text>
+          <Text style={{marginBottom: 30}}>{profile?.username} </Text>
+          <Text style={{marginBottom: 30}}>{profile?.name.toUpperCase()} </Text>
+          <Text style={{marginBottom: 30}}>{profile?.phone} </Text>
+          <Text style={{marginBottom: 30}}>****** </Text>
         </View>
       </View>
     </View>
