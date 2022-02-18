@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   removeTask,
@@ -14,6 +14,7 @@ import {showToast} from '../../utils/utils';
 import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 interface PropsTask {
   item: Task;
 }
@@ -52,21 +53,17 @@ const TaskItem = ({item}: PropsTask) => {
   };
   return (
     <View style={styles.item}>
+      <BouncyCheckbox
+        size={25}
+        fillColor="#E84B82"
+        unfillColor="#FFFFFF"
+        text={`${item.title} - ${item.description}`}
+        iconStyle={{borderColor: '#55BCF6'}}
+        onPress={(isChecked: boolean) => {
+          console.log(isChecked);
+        }}
+      />
       <View style={styles.itemLeft}>
-        <View style={styles.square} />
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            alignItems: 'stretch',
-          }}>
-          <Text style={styles.itemTextTitle}>{item.title}</Text>
-          <Text style={styles.itemText}>{item.description} </Text>
-        </View>
-        <View
-          style={item.status === 'todo' ? styles.chipToDo : styles.chipDone}>
-          <Text>{item.status.toUpperCase()} </Text>
-        </View>
         {item.status === 'todo' ? (
           <>
             <TouchableOpacity
