@@ -10,3 +10,12 @@ export interface BaseError {
   statusCode: number;
   message: string;
 }
+
+export interface User {
+  id: number;
+  username: string;
+  password: string;
+  name: string;
+  phone: string;
+  avatar: string;
+}

@@ -1,7 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {LogBox, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
+
 import {
   removeTask,
   updateStatusTaskDoneToDo,
@@ -11,15 +12,20 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchRemoveTask} from '../../app/TaskProvider/Task.service';
 import {restAPI} from '../../config/api';
 import {showToast} from '../../utils/utils';
-import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+
 interface PropsTask {
   item: Task;
 }
 
 const TaskItem = ({item}: PropsTask) => {
+  React.useEffect(() => {
+    LogBox.ignoreLogs([
+      "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+    ]);
+  }, []);
   const dispatch = useDispatch();
   const handleRemoveTask = (data: Task) => {
     dispatch(removeTask(data.id));
@@ -41,9 +47,31 @@ const TaskItem = ({item}: PropsTask) => {
       headers: {Authorization: `Bearer ${token}`},
     })
       .then(res => {
+        console.log('update task done');
         console.log(res.data);
         showToast(
           'Update Task Done Successfully',
+          `${data.title} - ${data.description}`,
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+  const updateTaskToDo = async (data: Task) => {
+    dispatch(updateStatusTaskDoneToDo(data));
+    console.log(data);
+    const token = await AsyncStorage.getItem('token');
+    axios({
+      method: 'PATCH',
+      url: `http://localhost:3000/task/${data.id}?status=todo`,
+      headers: {Authorization: `Bearer ${token}`},
+    })
+      .then(res => {
+        console.log(res.data);
+        console.log('update task todo');
+        showToast(
+          'Update Task ToDo Successfully',
           `${data.title} - ${data.description}`,
         );
       })
@@ -55,27 +83,23 @@ const TaskItem = ({item}: PropsTask) => {
     <View style={styles.item}>
       <BouncyCheckbox
         size={25}
-        fillColor="#E84B82"
+        fillColor="#55BCF6"
         unfillColor="#FFFFFF"
         text={`${item.title} - ${item.description}`}
         iconStyle={{borderColor: '#55BCF6'}}
         onPress={(isChecked: boolean) => {
           console.log(isChecked);
+          if (isChecked) {
+            updateTaskDone(item);
+          } else {
+            updateTaskToDo(item);
+          }
         }}
+        isChecked={item.status === 'todo' ? false : true}
       />
       <View style={styles.itemLeft}>
         {item.status === 'todo' ? (
           <>
-            <TouchableOpacity
-              onPress={() => {
-                updateTaskDone(item);
-              }}>
-              <IconMaterial
-                style={{margin: 10, color: 'green'}}
-                name="done"
-                size={30}
-              />
-            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 handleRemoveTask(item);
@@ -111,6 +135,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
     elevation: 7,
+    marginVertical: 8,
+    marginHorizontal: 16,
   },
   itemLeft: {
     flexDirection: 'row',

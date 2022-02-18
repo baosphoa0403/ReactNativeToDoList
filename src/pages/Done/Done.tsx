@@ -7,7 +7,6 @@ import {fetchListTask} from '../../app/TaskProvider/Task.service';
 import {setListTask, setListTaskDone} from '../../app/TaskProvider/Task.slice';
 import ListTask from '../../component/ListTask/ListTask';
 import {restAPI} from '../../config/api';
-
 const ListTaskDone = () => {
   const dispatch = useDispatch();
   const listTask = useSelector(selectListTasks);
