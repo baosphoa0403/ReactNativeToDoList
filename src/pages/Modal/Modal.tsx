@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {
+  Alert,
   Modal,
   Pressable,
   StyleSheet,
@@ -14,7 +15,6 @@ import {selectOpenModal} from '../../app/TaskProvider/Task.selector';
 import {fetchCreateTask} from '../../app/TaskProvider/Task.service';
 import {createTask, openCloseModal} from '../../app/TaskProvider/Task.slice';
 import {restAPI} from '../../config/api';
-import {showToast} from '../../utils/utils';
 
 export interface CreateTask {
   title: string;
@@ -37,7 +37,7 @@ const ModalCreate = () => {
           }),
         );
         setTask({description: '', title: ''});
-        showToast('Create Successfully', res.title + '-' + res.description);
+        Alert.alert('Create Task Successfully');
       })
       .catch(err => {
         console.log(err);

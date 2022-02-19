@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -76,6 +77,14 @@ const LoginPage = ({navigation}: Props) => {
         </View>
       </View>
       <Button title="Submit" onPress={() => submit()} />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.push('SignUp');
+        }}>
+        <Text style={{fontSize: 20, marginLeft: 10, marginTop: 10}}>
+          Do you have account ?
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

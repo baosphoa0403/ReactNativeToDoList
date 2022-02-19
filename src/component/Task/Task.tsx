@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {LogBox, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Alert, LogBox, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 
 import {
@@ -11,7 +11,6 @@ import {Task} from '../../app/TaskProvider/Task.type';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {fetchRemoveTask} from '../../app/TaskProvider/Task.service';
 import {restAPI} from '../../config/api';
-import {showToast} from '../../utils/utils';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -31,10 +30,7 @@ const TaskItem = ({item}: PropsTask) => {
     dispatch(removeTask(data.id));
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchRemoveTask(data.id, restAPI).then(res => {
-      showToast(
-        'Remove Task Successfully',
-        `${data.title} - ${data.description}`,
-      );
+      Alert.alert('Remove Task Successfully');
     });
   };
   const updateTaskDone = async (data: Task) => {
@@ -49,10 +45,7 @@ const TaskItem = ({item}: PropsTask) => {
       .then(res => {
         console.log('update task done');
         console.log(res.data);
-        showToast(
-          'Update Task Done Successfully',
-          `${data.title} - ${data.description}`,
-        );
+        Alert.alert('Update Task Done Successfully');
       })
       .catch(err => {
         console.log(err);
@@ -70,10 +63,7 @@ const TaskItem = ({item}: PropsTask) => {
       .then(res => {
         console.log(res.data);
         console.log('update task todo');
-        showToast(
-          'Update Task ToDo Successfully',
-          `${data.title} - ${data.description}`,
-        );
+        Alert.alert('Update Task ToDo Successfully');
       })
       .catch(err => {
         console.log(err);
