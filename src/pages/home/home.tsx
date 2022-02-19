@@ -10,8 +10,21 @@ import IconMaterial from 'react-native-vector-icons/MaterialIcons';
 import {openCloseModal} from '../../app/TaskProvider/Task.slice';
 import {useDispatch} from 'react-redux';
 import ListTaskDone from '../Done/Done';
+import {Alert, Text, TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {login} from '../../app/UserProvider/User.slice';
+// import {NativeStackScreenProps} from '@react-navigation/native-stack';
+// import {RootStackParamList} from '../../../App';
+
+// type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
 export const Home = () => {
   const dispatch = useDispatch();
+  const logout = () => {
+    Alert.alert('Say bye');
+    dispatch(login(false));
+    AsyncStorage.clear();
+  };
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -38,6 +51,11 @@ export const Home = () => {
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) => (
             <IconAnt name="user" color={color} size={size} />
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={logout} style={{marginRight: 20}}>
+              <Text>Logout</Text>
+            </TouchableOpacity>
           ),
         }}
         name="Profile"

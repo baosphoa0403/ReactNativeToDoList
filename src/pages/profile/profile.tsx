@@ -5,7 +5,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {
   Alert,
-  Button,
   Image,
   Platform,
   StyleSheet,
