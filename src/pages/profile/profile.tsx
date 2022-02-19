@@ -3,13 +3,22 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {useFocusEffect} from '@react-navigation/native';
 // import axios from 'axios';
 import React, {useCallback, useState} from 'react';
-import {Button, Image, Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Button,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {getMe} from '../../app/UserProvider/User.service';
 import {User} from '../../app/UserProvider/User.type';
 import {restAPI} from '../../config/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Icon from 'react-native-vector-icons/AntDesign';
 const Profile = () => {
   const [profile, setProfile] = useState<User | null>(null);
   useFocusEffect(
@@ -70,6 +79,7 @@ const Profile = () => {
               })
                 .then(result => {
                   console.log(result.data);
+                  Alert.alert(result.data);
                 })
                 .catch(err => {
                   console.log({...err});
@@ -85,7 +95,14 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       {/* <Text>Hello Profile {profile?.name}</Text> */}
-      <Image style={styles.avatar} source={{uri: profile?.avatar}} />
+      <View style={{position: 'relative'}}>
+        <Image style={styles.avatar} source={{uri: profile?.avatar}} />
+        <TouchableOpacity
+          onPress={choosePhotoFormLibrary}
+          style={{position: 'absolute', bottom: 100, left: 110}}>
+          <Icon name="upload" size={30} color="white" />
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           marginHorizontal: 100,
@@ -94,7 +111,6 @@ const Profile = () => {
           flexWrap: 'wrap',
           alignItems: 'flex-start',
         }}>
-        <Button title="Upload Avatar" onPress={choosePhotoFormLibrary} />
         <View style={styles.item}>
           <Text style={{marginBottom: 30}}>Username </Text>
           <Text style={{marginBottom: 30}}>Name </Text>
