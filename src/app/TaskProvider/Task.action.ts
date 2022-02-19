@@ -11,7 +11,6 @@ export const fetchListTaskActionAsync = createAsyncThunk(
       const response: Task[] = await fetchListTask(restAPI);
       return response;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error);
     }
   },

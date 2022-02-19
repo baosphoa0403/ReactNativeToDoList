@@ -29,7 +29,6 @@ const LoginPage = ({navigation}: Props) => {
   const messageLogin = useSelector(selectMessageLoginUser);
   const statusLogin = useSelector(selectStatusLoginUser);
   const submit = async () => {
-    // console.log();
     dispatch(await fetchLoginAsyncAction({username: userName, password}));
   };
   useEffect(() => {

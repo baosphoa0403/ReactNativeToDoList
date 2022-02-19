@@ -12,7 +12,6 @@ const ListTaskDone = () => {
   const listTask = useSelector(selectListTasks);
   useFocusEffect(
     React.useCallback(() => {
-      console.log('ListTaskDone');
       fetchListTask(restAPI)
         .then(res => {
           dispatch(setListTaskDone(res));

@@ -24,8 +24,6 @@ export const userSlice = createSlice({
       state.isSignOut = true;
     },
     login: (state, action: PayloadAction<boolean>) => {
-      console.log('run login ', action.payload);
-
       state.isLogin = action.payload;
     },
     resetMessage: state => {
@@ -42,7 +40,6 @@ export const userSlice = createSlice({
       AsyncStorage.setItem('token', action.payload.access_token);
     });
     builder.addCase(fetchLoginAsyncAction.rejected, (state, action) => {
-      console.log(action);
       state.status = 'failed';
       state.message = (action.payload as BaseError).message;
     });

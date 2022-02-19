@@ -24,7 +24,6 @@ const Profile = () => {
     useCallback(() => {
       getMe(restAPI)
         .then(res => {
-          console.log(res);
           setProfile(res);
         })
         .catch(err => {
